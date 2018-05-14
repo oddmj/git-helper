@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { which, config, cd, exec } from 'shelljs';
 
 function showGitProjectOpenDialog() {
   return new Promise((resolve) => {
@@ -13,24 +14,20 @@ function showGitProjectOpenDialog() {
 }
 
 function validateGitProject(path) {
-  path.toString();
-  //   const nodePath = which('node');
-  //   config.execPath = nodePath;
-  //   cd(path);
+  const nodePath = which('node');
+  config.execPath = nodePath.toString();
+  cd(path);
 
-  //   const result = exec('git status');
+  const result = exec('git status');
 
-  //   if (!result.code) {
-  //     return Promise.resolve(path);
-  //   } else {
-  //     return Promise.reject(undefined);
-  //   }
+  if (!result.code) {
+    return Promise.resolve(path);
+  }
+  return Promise.reject(undefined);
 }
 
 function selectGitProject() {
-  return showGitProjectOpenDialog().then((path) => {
-    validateGitProject(path);
-  });
+  return showGitProjectOpenDialog().then((path) => validateGitProject(path));
 }
 
 export default { selectGitProject };

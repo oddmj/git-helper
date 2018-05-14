@@ -8,11 +8,24 @@
 import service from './service/service';
 
 export default {
-  name: 'vue-git-helper',
+  name: 'git-helper',
   components: {},
+  data() {
+    return {
+      projectName: '',
+    };
+  },
   methods: {
     selectGitProject() {
-      service.selectGitProject();
+      service
+        .selectGitProject()
+        .then((path) => {
+          this.projectName = path.split('/').pop();
+          // this.showBranches();
+        })
+        .catch(() => {
+          // alert('깃 프로젝트가 아닙니다');
+        });
     },
   },
 };
