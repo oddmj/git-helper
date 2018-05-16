@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-btn @click="selectGitProject">프로젝트 열기</v-btn>
+    <p class="title text-xs-center">{{projectName}}</p>
   </v-app>
 </template>
 
@@ -12,7 +13,7 @@ export default {
   components: {},
   data() {
     return {
-      projectName: '',
+      projectName: null,
     };
   },
   methods: {
