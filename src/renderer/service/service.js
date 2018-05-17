@@ -60,4 +60,14 @@ function getBranches() {
   return result.map((branch) => createBranchObject(branch));
 }
 
-export default { selectGitProject, getBranches };
+function deleteBranches(branchNames, forceDelete) {
+  return exec(
+    `git branch ${forceDelete ? '-D' : '-d'} ${branchNames.join(' ')}`
+  );
+}
+
+export default {
+  selectGitProject,
+  getBranches,
+  deleteBranches,
+};

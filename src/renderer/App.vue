@@ -2,6 +2,7 @@
   <v-app dark>
     <v-btn @click="selectGitProject">프로젝트 열기</v-btn>
     <p class="title text-xs-center">{{projectName}}</p>
+    <v-btn @click="openDeleteDialog" v-if="isSelectedBranchExist">브랜치 삭제하기</v-btn>
     <v-list>
       <v-list-tile v-for="branch in branches" :key="branch.name">
         <v-list-tile-action>
@@ -17,6 +18,23 @@
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
+    <v-dialog v-model="deleteDialog" width="290" persistent>
+      <v-card>
+        <v-card-title>선택한 브랜치를 삭제하시겠습니까?</v-card-title>
+        <v-card-text>
+          <v-checkbox label="강제삭제" v-model="forceDelete"/>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="disagreeInDeleteDialog">아니요</v-btn>
+          <v-btn flat @click="agreeInDeleteDialog">네</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar top right v-model="deleteBranchCompleteSnackbar">
+      브랜치 삭제 완료
+      <v-btn flat color="pink" @click.native="deleteBranchCompleteSnackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -29,7 +47,10 @@ export default {
   data() {
     return {
       projectName: null,
-      branches: null,
+      branches: [],
+      deleteDialog: false,
+      forceDelete: false,
+      deleteBranchCompleteSnackbar: false,
     };
   },
   methods: {
@@ -41,11 +62,43 @@ export default {
           this.showBranches();
         })
         .catch(() => {
-          // alert('깃 프로젝트가 아닙니다');
+          alert('깃 프로젝트가 아닙니다');
         });
     },
     showBranches() {
       this.branches = service.getBranches();
+    },
+    openDeleteDialog() {
+      this.deleteDialog = true;
+    },
+    disagreeInDeleteDialog() {
+      this.deleteDialog = false;
+      this.forceDelete = false;
+    },
+    agreeInDeleteDialog() {
+      this.deleteDialog = false;
+      this.deleteBranches(this.forceDelete);
+      this.forceDelete = false;
+    },
+    deleteBranches(forceDelete) {
+      const branchNames = this.branches
+        .filter((branch) => branch.isSelected)
+        .map((branch) => branch.name);
+
+      const result = service.deleteBranches(branchNames, forceDelete);
+      if (result.code !== 0) {
+        alert(result.stderr);
+        console.error(result);
+      }
+
+      this.deleteBranchCompleteSnackbar = true;
+
+      this.showBranches();
+    },
+  },
+  computed: {
+    isSelectedBranchExist() {
+      return this.branches.some((branch) => branch.isSelected);
     },
   },
 };
