@@ -61,7 +61,8 @@ export default {
           this.projectName = path.split('/').pop();
           this.showBranches();
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
           alert('깃 프로젝트가 아닙니다');
         });
     },

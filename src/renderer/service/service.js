@@ -1,5 +1,7 @@
 import { ipcRenderer } from 'electron';
-import { which, config, cd, exec } from 'shelljs';
+import execa from 'execa';
+
+let cwd = '';
 
 function showGitProjectOpenDialog() {
   return new Promise((resolve) => {
@@ -14,16 +16,14 @@ function showGitProjectOpenDialog() {
 }
 
 function validateGitProject(path) {
-  const nodePath = which('node');
-  config.execPath = nodePath.toString();
-  cd(path);
+  cwd = path;
 
-  const result = exec('git status');
-
-  if (!result.code) {
-    return Promise.resolve(path);
-  }
-  return Promise.reject(undefined);
+  return execa.shell('git status', { cwd }).then((result) => {
+    if (!result.code) {
+      return Promise.resolve(path);
+    }
+    return Promise.reject(undefined);
+  });
 }
 
 function selectGitProject() {
@@ -55,14 +55,15 @@ function createBranchObject(branch) {
 }
 
 function getBranches() {
-  const result = exec('git branch').stdout.split('\n');
+  const result = execa.shellSync('git branch', { cwd }).stdout.split('\n');
   result.pop();
   return result.map((branch) => createBranchObject(branch));
 }
 
 function deleteBranches(branchNames, forceDelete) {
-  return exec(
-    `git branch ${forceDelete ? '-D' : '-d'} ${branchNames.join(' ')}`
+  return execa.shellSync(
+    `git branch ${forceDelete ? '-D' : '-d'} ${branchNames.join(' ')}`,
+    { cwd }
   );
 }
 
