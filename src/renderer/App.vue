@@ -35,28 +35,10 @@
         <p class="title">프로젝트를 선택해 주세요.</p>
       </template>
     </v-content>
-    <v-dialog 
-      v-model="deleteDialog" 
-      width="290" 
-      persistent>
-      <v-card>
-        <v-card-title>선택한 브랜치를 삭제하시겠습니까?</v-card-title>
-        <v-card-text>
-          <v-checkbox 
-            v-model="forceDelete" 
-            label="강제삭제"/>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn 
-            flat 
-            @click="disagreeInDeleteDialog">아니요</v-btn>
-          <v-btn 
-            flat 
-            @click="agreeInDeleteDialog">네</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <branch-delete-dialog 
+      :visible="branchDeleteDialogVisible" 
+      @disagree="closeBranchDeleteDialog"
+      @agree="processBranchDelete"/>
     <v-snackbar 
       v-model="deleteBranchCompleteSnackbar" 
       top 
@@ -74,16 +56,19 @@
 import service from './service/service';
 
 import LeftArea from './components/LeftArea';
+import BranchDeleteDialog from './components/BranchDeleteDialog';
 
 export default {
   name: 'GitHelper',
-  components: { 'left-area': LeftArea },
+  components: {
+    'left-area': LeftArea,
+    'branch-delete-dialog': BranchDeleteDialog,
+  },
   data() {
     return {
       projectName: '',
       branches: [],
-      deleteDialog: false,
-      forceDelete: false,
+      branchDeleteDialogVisible: false,
       deleteBranchCompleteSnackbar: false,
     };
   },
@@ -109,16 +94,14 @@ export default {
       this.branches = service.getBranches();
     },
     openDeleteDialog() {
-      this.deleteDialog = true;
+      this.branchDeleteDialogVisible = true;
     },
-    disagreeInDeleteDialog() {
-      this.deleteDialog = false;
-      this.forceDelete = false;
+    closeBranchDeleteDialog() {
+      this.branchDeleteDialogVisible = false;
     },
-    agreeInDeleteDialog() {
-      this.deleteDialog = false;
-      this.deleteBranches(this.forceDelete);
-      this.forceDelete = false;
+    processBranchDelete(data) {
+      this.branchDeleteDialogVisible = false;
+      this.deleteBranches(data.forceDelete);
     },
     deleteBranches(forceDelete) {
       const branchNames = this.branches
