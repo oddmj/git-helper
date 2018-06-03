@@ -39,16 +39,9 @@
       :visible="branchDeleteDialogVisible" 
       @disagree="closeBranchDeleteDialog"
       @agree="processBranchDelete"/>
-    <v-snackbar 
-      v-model="deleteBranchCompleteSnackbar" 
-      top 
-      right>
-      브랜치 삭제 완료
-      <v-btn 
-        flat 
-        color="pink" 
-        @click.native="deleteBranchCompleteSnackbar = false">Close</v-btn>
-    </v-snackbar>
+    <branch-delete-complete-snackbar 
+      :visible="branchDeleteCompleteSnackbarVisible" 
+      @close="closeBranchDeleteCompleteSnarkbar"/>
   </v-app>
 </template>
 
@@ -57,19 +50,21 @@ import service from './service/service';
 
 import LeftArea from './components/LeftArea';
 import BranchDeleteDialog from './components/BranchDeleteDialog';
+import BranchDeleteCompleteSnackbar from './components/BranchDeleteCompleteSnackbar';
 
 export default {
   name: 'GitHelper',
   components: {
     'left-area': LeftArea,
     'branch-delete-dialog': BranchDeleteDialog,
+    'branch-delete-complete-snackbar': BranchDeleteCompleteSnackbar,
   },
   data() {
     return {
       projectName: '',
       branches: [],
       branchDeleteDialogVisible: false,
-      deleteBranchCompleteSnackbar: false,
+      branchDeleteCompleteSnackbarVisible: false,
     };
   },
   computed: {
@@ -114,9 +109,12 @@ export default {
         console.error(result);
       }
 
-      this.deleteBranchCompleteSnackbar = true;
+      this.branchDeleteCompleteSnackbarVisible = true;
 
       this.showBranches();
+    },
+    closeBranchDeleteCompleteSnarkbar() {
+      this.branchDeleteCompleteSnackbarVisible = false;
     },
   },
 };
