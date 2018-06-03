@@ -4,7 +4,7 @@
     permanent>
     <v-btn 
       icon 
-      @click="onClick">
+      @click="selectGitProject">
       <v-icon>add</v-icon>
     </v-btn>
     <div>{{ projectName }}</div>
@@ -12,15 +12,29 @@
 </template>
 
 <script>
+import service from '../service/service';
+
 export default {
   props: {
-    onClick: {
-      type: Function,
-      required: true,
-    },
     projectName: {
       type: String,
       required: true,
+    },
+  },
+  methods: {
+    selectGitProject() {
+      service
+        .selectGitProject()
+        .catch((e) => {
+          console.error(e);
+          alert('깃 프로젝트가 아닙니다');
+          return Promise.reject();
+        })
+        .then((path) => {
+          this.$emit('selectProject', {
+            name: path.split('/').pop(),
+          });
+        });
     },
   },
 };

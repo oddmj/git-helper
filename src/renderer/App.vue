@@ -1,8 +1,8 @@
 <template>
   <v-app dark>
     <left-area 
-      :on-click="selectGitProject" 
-      :project-name="projectName"/>
+      :project-name="projectName"
+      @selectProject="onSelectProject"/>
     <v-content>
       <template v-if="branches.length">      
         <v-divider/>
@@ -73,17 +73,9 @@ export default {
     },
   },
   methods: {
-    selectGitProject() {
-      service
-        .selectGitProject()
-        .then((path) => {
-          this.projectName = path.split('/').pop();
-          this.showBranches();
-        })
-        .catch((e) => {
-          console.error(e);
-          alert('깃 프로젝트가 아닙니다');
-        });
+    onSelectProject(data) {
+      this.projectName = data.name;
+      this.showBranches();
     },
     showBranches() {
       this.branches = service.getBranches();
