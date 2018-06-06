@@ -32,6 +32,10 @@ function createWindow() {
     mainWindow = null;
   });
 
+  mainWindow.on('focus', () => {
+    mainWindow.webContents.send('focus');
+  });
+
   ipcMain.on('open-git-project-dialog', (event) => {
     new Promise((resolve, reject) => {
       dialog.showOpenDialog({ properties: ['openDirectory'] }, (filePaths) => {
