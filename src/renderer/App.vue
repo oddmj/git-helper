@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
+
 import service from './service/service';
 
 import MainArea from './components/MainArea';
@@ -40,6 +42,15 @@ export default {
       branchDeleteDialogVisible: false,
       branchDeleteCompleteSnackbarVisible: false,
     };
+  },
+  created() {
+    ipcRenderer.on('focus', () => {
+      if (this.branches.length === 0) {
+        return;
+      }
+
+      this.showBranches();
+    });
   },
   methods: {
     onSelectProject(data) {
