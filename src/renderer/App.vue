@@ -3,38 +3,10 @@
     <left-area 
       :project-name="projectName"
       @selectProject="onSelectProject"/>
-    <v-content>
-      <template v-if="branches.length">      
-        <v-divider/>
-        <p class="title">{{ projectName }}</p>
-        <v-divider/>
-        <v-btn 
-          v-if="isSelectedBranchExist" 
-          @click="openDeleteDialog">브랜치 삭제하기</v-btn>
-        <v-list>
-          <v-list-tile 
-            v-for="branch in branches" 
-            :key="branch.name">
-            <v-list-tile-action>
-              <v-checkbox 
-                v-if="branch.isDeletable" 
-                v-model="branch.isSelected"/>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{ branch.name }}
-              </v-list-tile-title>
-              <v-list-tile-sub-title v-if="!branch.isDeletable">
-                {{ branch.nonDeletableReason }}
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </template>
-      <template v-else>
-        <p class="title">프로젝트를 선택해 주세요.</p>
-      </template>
-    </v-content>
+    <main-area 
+      :project-name="projectName" 
+      :branches="branches"
+      @open-delete-dialog="openDeleteDialog"/>
     <branch-delete-dialog 
       :visible="branchDeleteDialogVisible" 
       @disagree="closeBranchDeleteDialog"
@@ -48,6 +20,7 @@
 <script>
 import service from './service/service';
 
+import MainArea from './components/MainArea';
 import LeftArea from './components/LeftArea';
 import BranchDeleteDialog from './components/BranchDeleteDialog';
 import BranchDeleteCompleteSnackbar from './components/BranchDeleteCompleteSnackbar';
@@ -58,6 +31,7 @@ export default {
     'left-area': LeftArea,
     'branch-delete-dialog': BranchDeleteDialog,
     'branch-delete-complete-snackbar': BranchDeleteCompleteSnackbar,
+    'main-area': MainArea,
   },
   data() {
     return {
@@ -66,11 +40,6 @@ export default {
       branchDeleteDialogVisible: false,
       branchDeleteCompleteSnackbarVisible: false,
     };
-  },
-  computed: {
-    isSelectedBranchExist() {
-      return this.branches.some((branch) => branch.isSelected);
-    },
   },
   methods: {
     onSelectProject(data) {
