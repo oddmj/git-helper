@@ -26,8 +26,7 @@ export default {
       service
         .selectGitProject()
         .catch((e) => {
-          console.error(e);
-          alert('깃 프로젝트가 아닙니다');
+          alert(e);
           return Promise.reject();
         })
         .then((path) => {
