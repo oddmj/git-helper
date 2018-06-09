@@ -36,13 +36,13 @@ function addToFile(path) {
     return Promise.reject('이미 추가한 프로젝트입니다.');
   }
 
-  projects.push({
-    path,
-  });
+  const addedProject = { path };
+
+  projects.push(addedProject);
 
   saveFileService.save(projects);
 
-  return Promise.resolve(path);
+  return Promise.resolve(addedProject);
 }
 
 function selectGitProject() {
@@ -75,9 +75,9 @@ function createBranchObject(branch) {
   };
 }
 
-function getBranches() {
+function getBranches(path) {
+  cwd = path;
   const result = execa.shellSync('git branch', { cwd }).stdout.split('\n');
-  result.pop();
   return result.map((branch) => createBranchObject(branch));
 }
 

@@ -1,9 +1,9 @@
 <template>
   <v-app dark>
-    <left-area 
-      :project-name="projectName"
-      @selectProject="onSelectProject"/>
-    <main-area 
+    <left-area
+      :selected-project="selectedProject"
+      @add-project="onAddProject"/>
+    <main-area
       :project-name="projectName" 
       :branches="branches"
       @open-delete-dialog="openDeleteDialog"/>
@@ -37,11 +37,19 @@ export default {
   },
   data() {
     return {
-      projectName: '',
+      selectedProject: {},
       branches: [],
       branchDeleteDialogVisible: false,
       branchDeleteCompleteSnackbarVisible: false,
     };
+  },
+  computed: {
+    projectName() {
+      if (this.selectedProject.path) {
+        return this.selectedProject.path.split('/').pop();
+      }
+      return '';
+    },
   },
   created() {
     ipcRenderer.on('focus', () => {
@@ -53,12 +61,12 @@ export default {
     });
   },
   methods: {
-    onSelectProject(data) {
-      this.projectName = data.name;
+    onAddProject(project) {
+      this.selectedProject = project;
       this.showBranches();
     },
     showBranches() {
-      this.branches = service.getBranches();
+      this.branches = service.getBranches(this.selectedProject.path);
     },
     openDeleteDialog() {
       this.branchDeleteDialogVisible = true;
