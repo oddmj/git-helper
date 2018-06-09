@@ -1,4 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'; // eslint-disable-line
+import { homedir } from 'os';
+import { readFileSync, writeFileSync } from 'jsonfile';
 
 /**
  * Set `__static` path to static files in production
@@ -8,6 +10,15 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path') // eslint-disable-line
     .join(__dirname, '/static')
     .replace(/\\/g, '\\\\'); // eslint-disable-line
+}
+
+const saveFilePath = `${homedir}/git-helper/data`;
+try {
+  readFileSync(saveFilePath);
+} catch (e) {
+  if (e.errno === -2) {
+    writeFileSync(saveFilePath, []);
+  }
 }
 
 let mainWindow;

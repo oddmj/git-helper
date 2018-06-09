@@ -1,6 +1,8 @@
 import { ipcRenderer } from 'electron';
 import execa from 'execa';
 
+import saveFileService from './save-file.service';
+
 let cwd = '';
 
 function showGitProjectOpenDialog() {
@@ -22,12 +24,31 @@ function validateGitProject(path) {
     if (!result.code) {
       return Promise.resolve(path);
     }
-    return Promise.reject(undefined);
+    return Promise.reject('git 프로젝트가 아닙니다.');
   });
 }
 
+function addToFile(path) {
+  const projects = saveFileService.get();
+
+  const isAlreadyAdded = projects.some((project) => project.path === path);
+  if (isAlreadyAdded) {
+    return Promise.reject('이미 추가한 프로젝트입니다.');
+  }
+
+  const addedProject = { path };
+
+  projects.push(addedProject);
+
+  saveFileService.save(projects);
+
+  return Promise.resolve(addedProject);
+}
+
 function selectGitProject() {
-  return showGitProjectOpenDialog().then((path) => validateGitProject(path));
+  return showGitProjectOpenDialog()
+    .then((path) => validateGitProject(path))
+    .then((path) => addToFile(path));
 }
 
 function createBranchObject(branch) {
@@ -54,9 +75,9 @@ function createBranchObject(branch) {
   };
 }
 
-function getBranches() {
+function getBranches(path) {
+  cwd = path;
   const result = execa.shellSync('git branch', { cwd }).stdout.split('\n');
-  result.pop();
   return result.map((branch) => createBranchObject(branch));
 }
 
