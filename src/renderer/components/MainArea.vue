@@ -4,8 +4,8 @@
       <v-divider/>
       <p class="title">{{ projectName }}</p>
       <v-divider/>
-      <v-btn 
-        v-if="isSelectedBranchExist" 
+      <v-btn
+        :disabled="isNotSelectedBranchExist"
         @click="openDeleteDialog">브랜치 삭제하기</v-btn>
       <v-list>
         <v-list-tile 
@@ -46,8 +46,8 @@ export default {
     },
   },
   computed: {
-    isSelectedBranchExist() {
-      return this.branches.some((branch) => branch.isSelected);
+    isNotSelectedBranchExist() {
+      return this.branches.every((branch) => !branch.isSelected);
     },
   },
   methods: {
