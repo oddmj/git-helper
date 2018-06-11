@@ -1,6 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'; // eslint-disable-line
-import { homedir } from 'os';
-import { readFileSync, writeFileSync } from 'jsonfile';
+import saveFileService from '../renderer/service/save-file.service';
 
 /**
  * Set `__static` path to static files in production
@@ -12,14 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
     .replace(/\\/g, '\\\\'); // eslint-disable-line
 }
 
-const saveFilePath = `${homedir}/git-helper/data`;
-try {
-  readFileSync(saveFilePath);
-} catch (e) {
-  if (e.errno === -2) {
-    writeFileSync(saveFilePath, []);
-  }
-}
+saveFileService.init();
 
 let mainWindow;
 const winURL =

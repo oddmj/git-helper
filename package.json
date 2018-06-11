@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "execa": "^0.10.0",
-    "jsonfile": "^4.0.0",
+    "fs-extra": "^6.0.1",
     "material-design-icons-iconfont": "^3.0.3",
     "vue": "^2.3.3",
     "vuetify": "^1.0.17"

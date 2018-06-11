@@ -1,18 +1,29 @@
 import { homedir } from 'os';
 import { join } from 'path';
-import { readFileSync, writeFileSync } from 'jsonfile';
+import { readJsonSync, outputJsonSync } from 'fs-extra';
 
 const saveFilePath = join(`${homedir()}/git-helper/data`);
 
+function init() {
+  try {
+    readJsonSync(saveFilePath);
+  } catch (e) {
+    if (e.errno === -2) {
+      outputJsonSync(saveFilePath, []);
+    }
+  }
+}
+
 function get() {
-  return readFileSync(saveFilePath);
+  return readJsonSync(saveFilePath);
 }
 
 function save(projects) {
-  writeFileSync(saveFilePath, projects);
+  outputJsonSync(saveFilePath, projects);
 }
 
 export default {
+  init,
   get,
   save,
 };
