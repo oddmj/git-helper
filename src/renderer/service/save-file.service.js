@@ -8,7 +8,7 @@ function init() {
   try {
     readJsonSync(saveFilePath);
   } catch (e) {
-    if (e.errno === -2) {
+    if (e.code === 'ENOENT') {
       outputJsonSync(saveFilePath, []);
     }
   }
