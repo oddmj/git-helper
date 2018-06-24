@@ -1,9 +1,7 @@
 <template>
   <v-content>
     <template v-if="branches.length">      
-      <v-divider/>
       <p class="title">{{ projectName }}</p>
-      <v-divider/>
       <v-btn
         :disabled="isNotSelectedBranchExist"
         @click="openDeleteDialog">브랜치 삭제하기</v-btn>
@@ -57,6 +55,8 @@ export default {
   },
 };
 </script>
-
 <style>
+.title {
+  padding: 10px;
+}
 </style>

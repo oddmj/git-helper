@@ -1,5 +1,5 @@
 {
-  "name": "vue-git-helper",
+  "name": "git-helper",
   "version": "0.0.1",
   "author": "laranhee <laranhee@gmail.com>",
   "description": "An electron-vue project",
@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "vue-git-helper",
+    "productName": "git-helper",
     "appId": "org.simulatedgreg.electron-vue",
     "directories": {
       "output": "build"
