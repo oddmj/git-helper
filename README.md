@@ -1,10 +1,20 @@
-# vue-git-helper
+# git-helper
 
-> An electron-vue project
+> Git util program
+
+![](./README/screenshot.png)
+
+현재 기능
+
+- Git 프로젝트 다중 브랜치 삭제 기능
+
+개발 예정
+
+- gitflow 를 통한 release 브랜치 생성시 커스텀 스크립트 실행
 
 #### Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -20,9 +30,6 @@ npm test
 
 # lint all JS/Vue component files in `src/`
 npm run lint
-
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[7c4e3e9](https://github.com/SimulatedGREG/electron-vue/tree/7c4e3e90a772bd4c27d2dd4790f61f09bae0fcef) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
